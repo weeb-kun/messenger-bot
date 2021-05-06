@@ -1,7 +1,10 @@
 package com.github.weebkun.events;
 
 import com.github.weebkun.Bot;
+import com.weebkun.ListUtil;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
@@ -9,6 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * listener for server messages
@@ -37,14 +41,16 @@ public class MessageListener extends ListenerAdapter {
         // msg format: @[server] @[channel] msg
         if(event.getAuthor().isBot()) return;
         else {
-            String[] msg = event.getMessage().getContentRaw().split(" ");
+            String[] msg = event.getMessage().getContentDisplay().split(" ");
             if(msg[0].contains("@") && msg[1].contains("@") && msg.length >= 3) {
                 // get server from name
                 // assume its the 1st result
                 Guild guild = Bot.getJda().getGuildsByName(msg[0].replaceFirst("@", ""), false).get(0);
                 // get channel and send msg
-                guild.getTextChannelsByName(msg[1].replaceFirst("@", ""), false).get(0)
-                        .sendMessage(String.join(" ", Arrays.copyOfRange(msg, 2, msg.length))).queue();
+                ListUtil.map(ListUtil.filter(guild.getChannels(true),
+                        channel -> channel.getName().equals(msg[1].replaceFirst("@", ""))),
+                        channel -> guild.getTextChannelById(channel.getId()))
+                        .get(0).sendMessage(String.join(" ", Arrays.copyOfRange(msg, 2, msg.length))).queue();
             }
         }
     }

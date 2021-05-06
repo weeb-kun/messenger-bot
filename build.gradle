@@ -12,9 +12,14 @@ repositories {
         name 'm2-dv8tion'
         url 'https://m2.dv8tion.net/releases'
     }
+    maven {
+        name 'nexus'
+        url 'https://nexus.pcchin.com/repository/maven-releases/'
+    }
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation 'net.dv8tion:JDA:4.2.1_262'
+    implementation 'com.github.weeb-kun:list-utils:1.2.0-alpha'
 }

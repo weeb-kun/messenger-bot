@@ -1,6 +1,6 @@
 package com.github.weebkun;
 
-import com.github.weebkun.events.GuildMessageListener;
+import com.github.weebkun.events.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -14,7 +14,7 @@ public class Bot {
 
     public static void main(String[] args) throws LoginException {
         jda = JDABuilder.createDefault(args[0]).build();
-        jda.addEventListener(new GuildMessageListener());
+        jda.addEventListener(new MessageListener());
     }
 
     public static JDA getJda() {
